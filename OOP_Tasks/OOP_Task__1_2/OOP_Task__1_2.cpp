@@ -34,7 +34,7 @@ void function(T x)
 }
 
 int main() {
-    system("chcp 65001"); //Киррилица в консоли
+    setlocale(LC_CTYPE, "rus"); //Киррилица в консоли
     cout << endl;
 
     float xf;

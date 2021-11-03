@@ -1,0 +1,17 @@
+﻿  OOP_Task__1_2.cpp
+D:\Development\Git\OOP\OOP_Tasks\OOP_Tasks\OOP_Task__1_2\OOP_Task__1_2.cpp(22,9): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+D:\Development\Git\OOP\OOP_Tasks\OOP_Tasks\OOP_Task__1_2\OOP_Task__1_2.cpp(52): message : выполняется компиляция ссылки на экземпляр шаблон функции "void function<float>(T)"
+          with
+          [
+              T=float
+          ]
+D:\Development\Git\OOP\OOP_Tasks\OOP_Tasks\OOP_Task__1_2\OOP_Task__1_2.cpp(25,12): warning C4244: инициализация: преобразование "double" в "T", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+  OOP_Task__1_2.vcxproj -> D:\Development\Git\OOP\OOP_Tasks\OOP_Tasks\Debug\OOP_Task__1_2.exe
