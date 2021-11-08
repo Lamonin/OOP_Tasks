@@ -40,13 +40,12 @@ T SafeTypeInput(string welcome_msg = "", string err_msg = "")
     return res;
 }
 
-
 /// <summary> Класс двумерного динамического массива </summary>
-template <class T1, class T2>
+template <class T>
 class array2D
 {
 private:
-    T1** _array = nullptr;
+    T** _array = nullptr;
     int _row, _column;
 
 public:
@@ -56,10 +55,10 @@ public:
             throw_mini_exception("array2D: Error! The number of rows or columns of the array is less than/equal to zero!");
 
         _row = row; _column = column;
-        _array = new T2 * [_row];
+        _array = new T * [_row];
         for (int i = 0; i < _row; i++)
             for (int j = 0; j < _column; j++)
-                _array[i] = new T2[_column];
+                _array[i] = new T[_column];
     }
 
     ~array2D()
@@ -78,7 +77,7 @@ public:
         else if (l1 >= _row || l2 >= _row)
             throw_mini_exception("swap_rows: Error! A row with an index greater than the length of the array is specified!");
 
-        T2* tmp = _array[l1];
+        T* tmp = _array[l1];
         _array[l1] = _array[l2];
         _array[l2] = tmp;
     }
@@ -98,7 +97,7 @@ public:
     int get_column_count() { return _column; }
     int get_total_elem_count() { return _row * _column; }
 
-    T2* operator[](int index)
+    T* operator[](int index)
     {
         if (index < 0 || index >= _row)
             throw_mini_exception("Error: The index is less than zero, or greater than the length of the array!");
@@ -107,7 +106,7 @@ public:
     }
 
     /// <summary> Применяет функцию fn ко всем элементам array2D </summary>
-    void ForEach(void(*fn)(T2&))
+    void ForEach(void(*fn)(T&))
     {
         for (int i = 0; i < _row; i++)
             for (int j = 0; j < _column; j++)
@@ -135,14 +134,14 @@ int main()
             cout << "The number must be greater than zero! Try again: ";
     } while (M <= 0);
 
-    array2D<int, int> arr(N,M); //Объявляем двумерный массив
+    array2D<int> arr(N, M); //Объявляем двумерный массив
 
     //######### Ввод значений вручную ###########
     /*cout << "\nEnter a matrix:\n";
     for (int i = 0; i < N; i++)
-        for (int j = 0; j < M; j++) 
+        for (int j = 0; j < M; j++)
             arr[i][j] = SafeTypeInput<int>("arr[" + std::to_string(i) + ", " + std::to_string(j) + "]: ", "Input is not a number. Try again: ");*/
-    
+
     //########## Ввод случайных значений ##########
     arr.ForEach([](auto& t) {t = random(1, 99); });
 
