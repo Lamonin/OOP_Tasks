@@ -59,26 +59,85 @@ void print_scan_to_console(const scan_info scan)
     cout << "\nШирина обл. сканирования: " << scan.size_x;
     cout << "\nВысота обл. сканирования: " << scan.size_y;
     cout << "\nОптическое разрешение: " << scan.optr;
-    cout << "\nВсего градаций серого: " << scan.grey << "\n";
+    cout << "\nГрадаций серого: " << scan.grey << "\n";
 }
 
 /// <summary> Вводит информацию о сканере с клавиатуры в консоли </summary>
 scan_info read_scan_from_console()
 {
     scan_info temp_scan;
-    string temp;
-    cout << "Название модели: "; getline(cin, temp);
-    temp_scan.model = temp;
-    temp_scan.price = SafeConsoleInput<int>("Цена: ", "Ввод с ошибкой! Повторите ввод: ");
-    temp_scan.size_x = SafeConsoleInput<double>("Ширина обл. сканирования: ", "Ввод с ошибкой! Повторите ввод: ");
-    temp_scan.size_y = SafeConsoleInput<double>("Высота обл. сканирования: ", "Ввод с ошибкой! Повторите ввод: ");
-    temp_scan.optr = SafeConsoleInput<int>("Оптическое разрешение: ", "Ввод с ошибкой! Повторите ввод: ");
-    temp_scan.grey = SafeConsoleInput<int>("Градаций серого: ", "Ввод с ошибкой! Повторите ввод: ");
+
+    //Ввод названия сканера
+    cout << "Название модели: ";
+    getline(cin, temp_scan.model);
+
+    //Ввод цены сканера
+    do 
+    {
+        temp_scan.price = SafeConsoleInput<int>("Цена: ", "Ввод с ошибкой! Повторите ввод: ");
+        if (temp_scan.price < 0)
+            cout << "Цена не может быть отрицательной!\n";
+    } while (temp_scan.price<0);
+
+
+    //Ввод ширины обл. сканирования
+    do 
+    {
+        temp_scan.size_x = SafeConsoleInput<double>("Ширина обл. сканирования: ", "Ввод с ошибкой! Повторите ввод: ");
+        if (temp_scan.size_x < 0)
+            cout << "Ширина обл. сканирования не может быть отрицательной!\n";
+    } while (temp_scan.size_x < 0);
+
+
+    //Ввод высоты обл. сканирования
+    do 
+    {
+        temp_scan.size_y = SafeConsoleInput<double>("Высота обл. сканирования: ", "Ввод с ошибкой! Повторите ввод: ");
+        if (temp_scan.size_y < 0)
+            cout << "Высота обл. сканирования не может быть отрицательной!\n";
+    } while (temp_scan.size_y < 0);
+
+
+    //Ввод опт. разрешения сканера
+    do 
+    {
+        temp_scan.optr = SafeConsoleInput<int>("Оптическое разрешение: ", "Ввод с ошибкой! Повторите ввод: ");
+        if (temp_scan.optr < 0)
+            cout << "Оптическое разрешение не может быть отрицательным!\n";
+    } while (temp_scan.optr < 0);
+
+
+    //Ввод градаций серого у сканера
+    do 
+    {
+        temp_scan.grey = SafeConsoleInput<int>("Градаций серого: ", "Ввод с ошибкой! Повторите ввод: ");
+        if (temp_scan.grey < 0)
+            cout << "Градаций серого не может быть  меньше нуля!\n";
+    } while (temp_scan.grey < 0);
 
     return temp_scan;
 }
 
-scan_info read_scan_from_cur_pos_in_file(fstream& file);
+/// <summary> Просто считывает информацию о сканере с текущей позиции в файле и возвращает структуру типа scan_info </summary>
+scan_info read_scan_from_cur_pos_in_file(fstream& file)
+{
+    if (!file.is_open()) exit_with_message("Error: file does not exist!");
+
+    scan_info temp_scan;
+    int sz = 0;
+    file.read((char*)&sz, 4);
+    string model(sz, 0);
+    for (int i = 0; i < sz; ++i)
+        file.read(&model[i], sizeof(model[0]));
+
+    temp_scan.model = model;
+    file.read((char*)&temp_scan.price, sizeof(temp_scan.price));
+    file.read((char*)&temp_scan.size_x, sizeof(temp_scan.size_x));
+    file.read((char*)&temp_scan.size_y, sizeof(temp_scan.size_y));
+    file.read((char*)&temp_scan.optr, sizeof(temp_scan.optr));
+    file.read((char*)&temp_scan.grey, sizeof(temp_scan.grey));
+    return temp_scan;
+}
 
 /// <summary> Проверяет наличие записи о сканере в файле </summary>
 bool check_scan_in_file(fstream& file, const scan_info scan)
@@ -156,27 +215,6 @@ void read_scan_from_user_and_write_to_file(fstream& file)
     write_scan_to_file(file, scan);
 }
 
-/// <summary> Просто считывает информацию о сканере с текущей позиции в файле и возвращает структуру типа scan_info </summary>
-scan_info read_scan_from_cur_pos_in_file(fstream& file)
-{
-    if (!file.is_open()) exit_with_message("Error: file does not exist!");
-
-    scan_info temp_scan;
-    int sz = 0;
-    file.read((char*)&sz, 4);
-    string model(sz,0);
-    for (int i = 0; i < sz; ++i)
-        file.read(&model[i], sizeof(model[0]));
-
-    temp_scan.model = model;
-    file.read((char*)&temp_scan.price, sizeof(temp_scan.price));
-    file.read((char*)&temp_scan.size_x, sizeof(temp_scan.size_x));
-    file.read((char*)&temp_scan.size_y, sizeof(temp_scan.size_y));
-    file.read((char*)&temp_scan.optr, sizeof(temp_scan.optr));
-    file.read((char*)&temp_scan.grey, sizeof(temp_scan.grey));
-    return temp_scan;
-}
-
 /// <summary> Выводит информацию о сканерах из файла </summary>
 void print_scans_from_file(fstream &file)
 {
@@ -212,14 +250,8 @@ int main()
 
     read_scan_from_user_and_write_to_file(file);
 
-    //scan_info temp_scan;
-    //temp_scan.model = "SCAN 3000";
-    //temp_scan.size_x = 10.4;
-    //temp_scan.size_y = 3.4;
-    //temp_scan.price = 3000;
-    //temp_scan.optr = 1200;
-    //temp_scan.grey = 256;
-    //write_scan_to_file(file, temp_scan);
+    scan_info temp_scan { "SCAN 3000" , 3000, 10.4, 3.4, 1200, 256};
+    write_scan_to_file(file, temp_scan);
 
     //temp_scan.model = "SCAN 3220";
     //temp_scan.size_x = 10.4;

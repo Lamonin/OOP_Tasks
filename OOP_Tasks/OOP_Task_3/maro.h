@@ -1,6 +1,6 @@
 //#########################
 //
-// Различные полезные методы
+// Various useful methods
 // 
 //#########################
 
@@ -15,13 +15,13 @@ using std::cout;
 using std::cerr;
 using std::cin;
 
-/// <summary> Генерация случайного ЦЕЛОГО числа в диапазоне от min до max включительно. </summary>
+/// <summary> Generates a random Integer number between min and max inclusive. </summary>
 int random(const int min, const int max)
 {
     return rand() % (max - min + 1) + min;
 }
 
-/// <summary> Печатает в консоль err_msg и завершает программу с кодом 1 </summary>
+/// <summary> Prints err_msg to the console and terminates the programme with code 1 </summary>
 void exit_with_message(string err_msg)
 {
     cerr << err_msg;
@@ -29,8 +29,8 @@ void exit_with_message(string err_msg)
 }
 
 /// <summary>
-/// Выводит на консоль welcome_msg, обрабатывает ввод пользователя. 
-/// Если тип ввода не удовлетворяет T, то выводит err_msg и повторяет ввод.
+/// Outputs welcome_msg to the console, handles user input. 
+/// If the input type does not satisfy T, outputs err_msg and repeats the input.
 /// </summary>
 template <typename T>
 T SafeConsoleInput(string welcome_msg = "", string err_msg = "")
@@ -39,11 +39,11 @@ T SafeConsoleInput(string welcome_msg = "", string err_msg = "")
     bool inputIsNotCorrect = false;
     cout << welcome_msg;
     do {
-        if (inputIsNotCorrect) //Если ввод оказался с ошибкой
+        if (inputIsNotCorrect) //If the input is faulty
         {
             cout << err_msg;
-            cin.clear(); //Переводим в "обычное" состояние
-            cin.ignore(32767, '\n'); //Очищаем данные в вводе
+            cin.clear(); //Switching to the "normal" state
+            cin.ignore(32767, '\n'); //Clearing the data in the input
             inputIsNotCorrect = false;
         }
         cin >> res;
