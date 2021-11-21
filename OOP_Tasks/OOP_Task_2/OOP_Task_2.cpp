@@ -11,7 +11,7 @@ using std::string;
 /// <summary> Генерация случайного ЦЕЛОГО числа в диапазоне от min до max включительно. </summary>
 int random(const int min, const int max) { return rand() % (max - min + 1) + min; }
 
-/// <summary> Выбрасывает "мини-исключение" с сообщением err_msg </summary>
+/// <summary> Выбрасывает "мини-исключение" с сообщением err_msg и завершает работу программы с кодом 1 </summary>
 void throw_mini_exception(string err_msg)
 {
     cerr << err_msg;
