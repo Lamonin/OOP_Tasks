@@ -22,7 +22,7 @@ int random(const int min, const int max)
 }
 
 /// <summary> Prints err_msg to the console and terminates the programme with code 1 </summary>
-void exit_with_message(string err_msg)
+void exit_with_message(const char* err_msg)
 {
     cerr << err_msg;
     exit(1);
@@ -33,7 +33,7 @@ void exit_with_message(string err_msg)
 /// If the input type does not satisfy T, outputs err_msg and repeats the input.
 /// </summary>
 template <typename T>
-T SafeConsoleInput(string welcome_msg = "", string err_msg = "")
+T SafeConsoleInput(const char* welcome_msg = "", const char* err_msg = "", bool(*expression)(T&) = [] {})
 {
     T res;
     bool inputIsNotCorrect = false;
@@ -47,7 +47,7 @@ T SafeConsoleInput(string welcome_msg = "", string err_msg = "")
             inputIsNotCorrect = false;
         }
         cin >> res;
-        inputIsNotCorrect = !cin || (cin && cin.peek() != '\n');
+        inputIsNotCorrect = !cin || (cin && cin.peek() != '\n') || !expression(res);
     } while (inputIsNotCorrect);
 
     return res;

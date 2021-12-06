@@ -71,49 +71,11 @@ scan_info read_scan_from_console()
     cout << "Название модели: ";
     getline(cin, temp_scan.model);
 
-    //Ввод цены сканера
-    do 
-    {
-        temp_scan.price = SafeConsoleInput<int>("Цена: ", "Ввод с ошибкой! Повторите ввод: ");
-        if (temp_scan.price < 0)
-            cout << "Цена не может быть отрицательной!\n";
-    } while (temp_scan.price<0);
-
-
-    //Ввод ширины обл. сканирования
-    do 
-    {
-        temp_scan.size_x = SafeConsoleInput<double>("Ширина обл. сканирования: ", "Ввод с ошибкой! Повторите ввод: ");
-        if (temp_scan.size_x < 0)
-            cout << "Ширина обл. сканирования не может быть отрицательной!\n";
-    } while (temp_scan.size_x < 0);
-
-
-    //Ввод высоты обл. сканирования
-    do 
-    {
-        temp_scan.size_y = SafeConsoleInput<double>("Высота обл. сканирования: ", "Ввод с ошибкой! Повторите ввод: ");
-        if (temp_scan.size_y < 0)
-            cout << "Высота обл. сканирования не может быть отрицательной!\n";
-    } while (temp_scan.size_y < 0);
-
-
-    //Ввод опт. разрешения сканера
-    do 
-    {
-        temp_scan.optr = SafeConsoleInput<int>("Оптическое разрешение: ", "Ввод с ошибкой! Повторите ввод: ");
-        if (temp_scan.optr < 0)
-            cout << "Оптическое разрешение не может быть отрицательным!\n";
-    } while (temp_scan.optr < 0);
-
-
-    //Ввод градаций серого у сканера
-    do 
-    {
-        temp_scan.grey = SafeConsoleInput<int>("Градаций серого: ", "Ввод с ошибкой! Повторите ввод: ");
-        if (temp_scan.grey < 0)
-            cout << "Градаций серого не может быть  меньше нуля!\n";
-    } while (temp_scan.grey < 0);
+    temp_scan.price = SafeConsoleInput<int>("Цена: ", "Ввод с ошибкой! Повторите ввод: ", [](auto& t) { return t>0; });
+    temp_scan.size_x = SafeConsoleInput<double>("Ширина обл. сканирования: ", "Ввод с ошибкой! Повторите ввод: ", [](auto& t) { return t > 0; });
+    temp_scan.size_y = SafeConsoleInput<double>("Высота обл. сканирования: ", "Ввод с ошибкой! Повторите ввод: ", [](auto& t) { return t > 0; });
+    temp_scan.optr = SafeConsoleInput<int>("Оптическое разрешение: ", "Ввод с ошибкой! Повторите ввод: ", [](auto& t) { return t > 0; });
+    temp_scan.grey = SafeConsoleInput<int>("Градаций серого: ", "Ввод с ошибкой! Повторите ввод: ", [](auto& t) { return t > 0; });
 
     return temp_scan;
 }
