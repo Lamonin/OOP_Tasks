@@ -34,12 +34,13 @@ public:
 	{
 		return surname + " " + name + " " + patronymic;
 	}
-
-
 };
 
 class Teacher : public Person
 {
+private:
+	std::string discipline;
+
 public:
 	Teacher():Person()
 	{
@@ -50,6 +51,15 @@ public:
 	{
 
 	}
+
+	std::string to_string() override
+	{
+		return Person::to_string() + " " + discipline;
+	}
+
+	void SetDiscipline(std::string discipline) { this->discipline = discipline; }
+
+	std::string GetDiscipline() { return discipline; }
 };
 
 /// <summary> Класс описывающий студента </summary>
@@ -80,15 +90,6 @@ public:
 		UNIQUE_ID++;
 		unique_id = UNIQUE_ID;
 	}
-
-	/// <summary> Возвращает имя студента </summary>
-	std::string get_name() { return name; }
-
-	/// <summary> Возвращает фамилию студента </summary>
-	std::string get_surname() { return surname; }
-
-	/// <summary> Возвращает отчество студента </summary>
-	std::string get_patronymic() { return patronymic; }
 
 	/// <summary> Возвращает данные студента в виде строки </summary>
 	std::string to_string() override
@@ -222,8 +223,8 @@ class Subject
 private:
 	//Название дисциплины
 	std::string discipline;
-	Teacher _teacher;
 	std::string time;
+	Teacher _teacher;
 	//Для какой учебной группы
 	StudyGroup* subjectStudyGroup;
 

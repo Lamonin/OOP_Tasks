@@ -33,8 +33,11 @@ int main()
     group2.PinStudent(st4);
 
     Teacher t1("Зиновьев", "Павел",  "Владимирович");
+    t1.SetDiscipline("Матанализ");
     Teacher t2("Каменев", "Сергей",  "Валентинович");
+    t2.SetDiscipline("Философия");
     Teacher t3("Осипова", "Марина",  "Анатольевна");
+    t3.SetDiscipline("Матанализ");
 
     Schedule schedule;
 
