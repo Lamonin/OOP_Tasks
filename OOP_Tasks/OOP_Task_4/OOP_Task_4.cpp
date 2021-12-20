@@ -32,29 +32,40 @@ int main()
     group2.PinStudent(st3);
     group2.PinStudent(st4);
 
+    Teacher t1("Зиновьев", "Павел",  "Владимирович");
+    Teacher t2("Каменев", "Сергей",  "Валентинович");
+    Teacher t3("Осипова", "Марина",  "Анатольевна");
+
     Schedule schedule;
 
-    Subject sbj1("Матанализ", "Зиновьев Павел Владимирович", "10:10", &group1);
+    Subject sbj1("Матанализ", t1, "10:10", &group1);
     Subject sbj2(sbj1);
     sbj2.set_discipline("Философия");
     sbj2.set_time("11:50");
-    sbj2.set_teacher_fio("Каменев Сергей Валентинович");
+    sbj2.set_teacher(t2);
     schedule.AddSubject(sbj1);
     schedule.AddSubject(sbj2);
 
-    Subject sbj3("Матанализ", "Зиновьев Павел Владимирович", "8:30", &group2);
-    Subject sbj4("Матанализ", "Зиновьев Павел Владимирович", "15:10", &group2);
+    Subject sbj3("Матанализ", t1, "8:30", &group2);
+    Subject sbj4("Матанализ", t1, "15:10", &group2);
     schedule.AddSubject(sbj3);
     schedule.AddSubject(sbj4);
 
 
     std::cout << "Расписание группы: " << group1.get_groupNum() << "\n";
-    std::cout << schedule.GetStudyGroupScheduleLikeString(group1.get_groupNum());
+    std::cout << schedule.GetStudyGroupScheduleAsString(group1.get_groupNum());
     std::cout << "\nДля студентов:\n";
-    std::cout << group1.GetAllStudentsLikeString() << "\n";
+    std::cout << group1.GetAllStudentsAsString() << "\n";
 
     std::cout << "Расписание группы: " << group2.get_groupNum() << "\n";
-    std::cout << schedule.GetStudyGroupScheduleLikeString(group2.get_groupNum());
+    std::cout << schedule.GetStudyGroupScheduleAsString(group2.get_groupNum());
     std::cout << "\nДля студентов:\n";
-    std::cout << group2.GetAllStudentsLikeString() << "\n";
+    std::cout << group2.GetAllStudentsAsString() << "\n\n";
+
+    AllSubjectTeachers mathTeachers;
+    mathTeachers.set_subjectName("Матанализ");
+    mathTeachers.PinTeacher(t1);
+    mathTeachers.PinTeacher(t3);
+    std::cout << "Предмет " << mathTeachers.get_subjectName() << " ведут:\n";
+    std::cout << mathTeachers.GetAllTeachersAsString();
 }

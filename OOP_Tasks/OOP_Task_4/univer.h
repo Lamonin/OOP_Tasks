@@ -2,36 +2,80 @@
 #include <list>
 #include <string>
 
-/// <summary> Класс описывающий студента </summary>
-class Student
+class Person
 {
-private:
-	
-	int unique_id; //Уникальный идентифиватор студента
+protected:
 	std::string name; //Имя
 	std::string surname; //Фамилия
 	std::string patronymic; //Отчество
 
 public:
+	/// <summary> Person со стандартными параметрами </summary>
+	Person() :name("Ivan"), surname("Ivanov")
+	{
+	}
+
+	/// <summary> Person с указанными именем, фамилией и отчеством </summary>
+	Person( std::string surname, std::string name, std::string patronymic = "") :name(name),
+		surname(surname), patronymic(patronymic)
+	{
+	}
+
+	/// <summary> Возвращает имя Person </summary>
+	std::string GetName() { return name; }
+
+	/// <summary> Возвращает фамилию Person </summary>
+	std::string GetSurname() { return surname; }
+
+	/// <summary> Возвращает отчество Person </summary>
+	std::string GetPatronymic() { return patronymic; }
+
+	virtual std::string to_string()
+	{
+		return surname + " " + name + " " + patronymic;
+	}
+
+
+};
+
+class Teacher : public Person
+{
+public:
+	Teacher():Person()
+	{
+
+	}
+
+	Teacher(std::string surname, std::string name,  std::string patronymic = "") :Person(surname, name, patronymic)
+	{
+
+	}
+};
+
+/// <summary> Класс описывающий студента </summary>
+class Student: public Person
+{
+private:
+	int unique_id; //Уникальный идентифиватор студента
+
+public:
 	static int UNIQUE_ID;
 	/// <summary> Студент со стандартными параметрами </summary>
-	Student():name("Ivan"), surname("Ivanov")
+	Student():Person()
 	{
 		UNIQUE_ID++;
 		unique_id = UNIQUE_ID;
 	}
 
 	/// <summary> Студент с указанными именем, фамилией и отчеством </summary>
-	Student(std::string name, std::string surname, std::string patronymic = "") :name(name),
-		surname(surname), patronymic(patronymic)
+	Student(std::string surname, std::string name,  std::string patronymic = "") :Person(surname, name,  patronymic)
 	{
 		UNIQUE_ID++;
 		unique_id = UNIQUE_ID;
 	}
 
 	/// <summary> Копирует данные student и создает новый объект класса Student </summary>
-	Student(const Student& student) :name(student.name),
-		surname(student.surname), patronymic(student.patronymic)
+	Student(const Student& student) :Person(student.surname, student.name,  student.patronymic)
 	{
 		UNIQUE_ID++;
 		unique_id = UNIQUE_ID;
@@ -47,9 +91,9 @@ public:
 	std::string get_patronymic() { return patronymic; }
 
 	/// <summary> Возвращает данные студента в виде строки </summary>
-	std::string to_string()
+	std::string to_string() override
 	{
-		return name + " " + surname + " " + patronymic;
+		return std::to_string(unique_id) + " " + Person::to_string();
 	}
 
 	bool operator ==(const Student& student) const
@@ -79,14 +123,37 @@ public:
 
 int Student::UNIQUE_ID = 0;
 
-/// <summary>
-/// Учебная группа
-/// </summary>
+template <class T>
+class UniverPersonGroup
+{
+private:
+	std::list <T*> members;
+public:
+	void PinPerson(T &person)
+	{
+		members.push_back(&person);
+		members.unique();
+	}
+
+	void UnPinPerson(T &person)
+	{
+		members.remove(&person);
+	}
+
+	std::string to_string()
+	{
+		std::string output = "";
+		for (T* s : members) output = output + s->to_string() + "\n";
+		return output;
+	}
+};
+
+/// <summary> Учебная группа </summary>
 class StudyGroup
 {
 private:
 	//Список студентов этой группы
-	std::list <Student*> students;
+	UniverPersonGroup<Student> students;
 	std::string groupNum;
 public:
 	StudyGroup() :groupNum("A0001")
@@ -100,69 +167,81 @@ public:
 	}
 	
 	/// <summary> Возвращает список студентов этой группы в виде строки </summary>
-	std::string GetAllStudentsLikeString()
+	std::string GetAllStudentsAsString()
 	{
-		std::string output = "";
-		for (Student* s : students) output = output + s->to_string() + "\n";
-		return output;
+		return students.to_string();
 	}
 
-	/// <summary>
-	/// Прикрепляет студента к группе
-	/// </summary>
+	/// <summary> Прикрепляет студента к группе </summary>
 	void PinStudent(Student &student)
 	{
-		students.push_back(&student);
-		students.unique();
+		students.PinPerson(student);
 	}
 
-	/// <summary>
-	/// Открепляет студента от группы
-	/// </summary>
+	/// <summary> Открепляет студента от группы </summary>
 	void UnPinStudent(Student& student)
 	{
-		students.remove(&student);
+		students.UnPinPerson(student);
 	}
 
-	/// <summary>
-	/// Устанавливает номер группы
-	/// </summary>
-	std::string set_groupNum(std::string groupNum) { this->groupNum = groupNum; }
+	/// <summary> Устанавливает номер группы </summary>
+	void set_groupNum(std::string groupNum) { this->groupNum = groupNum; }
 
-	/// <summary>
-	/// Возвращает номер группы
-	/// </summary>
+	/// <summary> Возвращает номер группы </summary>
 	std::string get_groupNum() { return groupNum; }
 };
 
-/// <summary>
-/// Класс описывающий учебный предмет
-/// </summary>
+class AllSubjectTeachers
+{
+private:
+	UniverPersonGroup<Teacher> teachers;
+	std::string subjectName;
+public:
+	void PinTeacher(Teacher& teacher)
+	{
+		teachers.PinPerson(teacher);
+	}
+
+	void UnPinTeacher(Teacher& teacher)
+	{
+		teachers.UnPinPerson(teacher);
+	}
+
+	std::string GetAllTeachersAsString()
+	{
+		return teachers.to_string();
+	}
+
+	std::string get_subjectName() { return subjectName; }
+	void set_subjectName(std::string subjectName) { this->subjectName = subjectName; }
+};
+
+/// <summary> Класс описывающий учебный предмет </summary>
 class Subject
 {
 private:
 	//Название дисциплины
 	std::string discipline;
-	std::string teacher_fio;
+	Teacher _teacher;
 	std::string time;
 	//Для какой учебной группы
 	StudyGroup* subjectStudyGroup;
 
 public:
-	Subject() : discipline("standart_discipline"), teacher_fio("Ivanov Ivan"), time("8:30"), subjectStudyGroup(nullptr)
+	Subject() : discipline("standart_discipline"), time("8:30"), subjectStudyGroup(nullptr)
 	{
-
+		
 	}
 
-	Subject(std::string discipline, std::string teacher_fio, std::string time, StudyGroup* group) : discipline(discipline),
-		teacher_fio(teacher_fio), time(time), subjectStudyGroup(group)
+	Subject(std::string discipline, Teacher teacher, std::string time, StudyGroup* group) : discipline(discipline),
+		_teacher(teacher), time(time), subjectStudyGroup(group)
 	{
 
 	}
 
 	/// <summary> Конструктор копирования Subject </summary>
 	Subject(const Subject& subject) : discipline(subject.discipline),
-		teacher_fio(subject.teacher_fio), time(subject.time), subjectStudyGroup(subject.subjectStudyGroup)
+		_teacher(subject._teacher), time(subject.time), subjectStudyGroup(subject.subjectStudyGroup)
 	{
 
 	}
@@ -173,18 +252,16 @@ public:
 	/// <summary> Устанавливает дисциплину предмета </summary>
 	void set_discipline(std::string discipline) { this->discipline = discipline; }
 
-	/// <summary> Устанавливает ФИО преподавателя предмета </summary>
-	void set_teacher_fio(std::string time) { this->teacher_fio = teacher_fio; }
+	/// <summary> Устанавливает преподавателя предмета </summary>
+	void set_teacher(Teacher teacher) { this->_teacher = teacher; }
 
-	/// <summary> Устанавливает группу для которого предмет </summary>
+	/// <summary> Устанавливает группу для которой предмет </summary>
 	void set_subjectStudyGroup(StudyGroup* group) { subjectStudyGroup = group; }
 
-	/// <summary>
-	/// Возвращает данные предмета в виде строки
-	/// </summary>
+	/// <summary> Возвращает данные предмета в виде строки </summary>
 	std::string to_string()
 	{
-		return "Время: " + time + " Группа: " + subjectStudyGroup->get_groupNum() + " " + discipline + " " + teacher_fio;
+		return "Время: " + time + " Группа: " + subjectStudyGroup->get_groupNum() + " " + discipline + " " + _teacher.to_string();
 	}
 
 	/// <summary>
@@ -193,9 +270,7 @@ public:
 	std::string get_studyGroupNum() { return subjectStudyGroup->get_groupNum(); }
 };
 
-/// <summary>
-/// Класс хранящий учебное расписание
-/// </summary>
+/// <summary> Класс хранящий учебное расписание </summary>
 class Schedule
 {
 private:
@@ -204,26 +279,20 @@ private:
 public:
 	Schedule() {}
 
-	/// <summary>
-	/// Добавляет предмет в учебное расписание
-	/// </summary>
+	/// <summary> Добавляет предмет в учебное расписание </summary>
 	void AddSubject(Subject& subject)
 	{
 		subjects.push_back(&subject);
 	}
 
-	/// <summary>
-	/// Удаляет предмет из учебного расписания
-	/// </summary>
+	/// <summary> Удаляет предмет из учебного расписания </summary>
 	void RemoveSubject(Subject& subject)
 	{
 		subjects.remove(&subject);
 	}
 
-	/// <summary>
-	/// Возвращает расписание по группе в виде строки
-	/// </summary>
-	std::string GetStudyGroupScheduleLikeString(std::string groupNum)
+	/// <summary> Возвращает расписание по группе в виде строки </summary>
+	std::string GetStudyGroupScheduleAsString(std::string groupNum)
 	{
 		std::string output = "";
 		for (Subject* s : subjects)
